@@ -50,7 +50,7 @@ CONN_PARAMS_PAT = {
 CONN_PARAMS_KEYPAIR = {"account": "airflow", "authenticator": "snowflake", "user": "user"}
 CONN_PARAMS_WIF = {
     "account": "airflow",
-    "authenticator": "WORKLOAD_IDENTITY",
+    "authenticator": "workload_identity",
     "workload_identity_provider": "GCP",
 }
 FETCH_TOKEN = MODULE_PATH + "._fetch_{}_identity_token"
@@ -168,7 +168,7 @@ class TestSnowflakeRestTokenProvider:
     def test_get_token_workload_identity_with_private_key_uses_key_pair(self, mock_conn_params):
         mock_conn_params.return_value = {
             **CONN_PARAMS_KEYPAIR,
-            "authenticator": "WORKLOAD_IDENTITY",
+            "authenticator": "workload_identity",
             "workload_identity_provider": "AWS",
         }
         key = rsa.generate_private_key(backend=default_backend(), public_exponent=65537, key_size=2048)
@@ -202,14 +202,12 @@ class TestSnowflakeRestTokenProvider:
         assert provider.get_token().token == "WIF.OIDC.token"
         assert loader.call_count == 2
 
-    @pytest.mark.parametrize("authenticator", ["WORKLOAD_IDENTITY", "workload_identity"])
     @pytest.mark.parametrize("provider_name", ["GCP", "AZURE", "AWS", "gcp"])
     @mock.patch.object(SnowflakeHook, "_get_conn_params", autospec=True)
-    def test_get_token_workload_identity(self, mock_conn_params, provider_name, authenticator):
+    def test_get_token_workload_identity(self, mock_conn_params, provider_name):
         credential = _make_jwt(exp=int(time.time()) + 3600)
         mock_conn_params.return_value = {
             **CONN_PARAMS_WIF,
-            "authenticator": authenticator,
             "workload_identity_provider": provider_name,
         }
         hook = SnowflakeHook(snowflake_conn_id="mock_conn_id")
@@ -232,7 +230,7 @@ class TestSnowflakeRestTokenProvider:
         provider = SnowflakeRestTokenProvider(SnowflakeHook(), private_key_loader=lambda: None)
         with pytest.raises(
             ValueError,
-            match="workload_identity_provider was set but authenticator was not set to WORKLOAD_IDENTITY",
+            match="workload_identity_provider was set but authenticator was not set to workload_identity",
         ):
             provider.get_token()
         fetch.assert_not_called()

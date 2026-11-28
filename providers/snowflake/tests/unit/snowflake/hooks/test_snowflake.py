@@ -2201,19 +2201,19 @@ class TestPytestSnowflakeHook:
 
     @pytest.mark.parametrize("provider", ["AWS", "AZURE", "GCP", "OIDC"])
     def test_get_conn_params_forwards_workload_identity_provider(self, provider):
-        """When authenticator is WORKLOAD_IDENTITY, workload_identity_provider must reach the connector.
+        """When authenticator is workload_identity, workload_identity_provider must reach the connector.
 
         The connector raises ``251017: workload_identity_provider must be set ...`` if the param is
         dropped, so the hook has to forward it for keyless Workload Identity Federation to work.
         """
         connection_kwargs = deepcopy(BASE_CONNECTION_KWARGS)
-        connection_kwargs["extra"]["authenticator"] = "WORKLOAD_IDENTITY"
+        connection_kwargs["extra"]["authenticator"] = "workload_identity"
         connection_kwargs["extra"]["workload_identity_provider"] = provider
 
         with mock.patch.dict("os.environ", AIRFLOW_CONN_TEST_CONN=Connection(**connection_kwargs).get_uri()):
             conn_params = SnowflakeHook(snowflake_conn_id="test_conn")._get_conn_params()
 
-        assert conn_params["authenticator"] == "WORKLOAD_IDENTITY"
+        assert conn_params["authenticator"] == "workload_identity"
         assert conn_params["workload_identity_provider"] == provider
 
     def test_get_conn_params_omits_workload_identity_provider_when_unset(self):
@@ -2228,7 +2228,7 @@ class TestPytestSnowflakeHook:
     def test_get_conn_params_workload_identity_provider_backcompat_prefix(self):
         """The backcompat ``extra__snowflake__`` prefix is honored for workload_identity_provider."""
         connection_kwargs = deepcopy(BASE_CONNECTION_KWARGS)
-        connection_kwargs["extra"]["authenticator"] = "WORKLOAD_IDENTITY"
+        connection_kwargs["extra"]["authenticator"] = "workload_identity"
         connection_kwargs["extra"]["extra__snowflake__workload_identity_provider"] = "GCP"
 
         with mock.patch.dict("os.environ", AIRFLOW_CONN_TEST_CONN=Connection(**connection_kwargs).get_uri()):
@@ -2239,7 +2239,7 @@ class TestPytestSnowflakeHook:
     def test_get_conn_passes_workload_identity_provider_to_connect(self):
         """The forwarded param has to land in the actual ``snowflake.connector.connect()`` call."""
         connection_kwargs = deepcopy(BASE_CONNECTION_KWARGS)
-        connection_kwargs["extra"]["authenticator"] = "WORKLOAD_IDENTITY"
+        connection_kwargs["extra"]["authenticator"] = "workload_identity"
         connection_kwargs["extra"]["workload_identity_provider"] = "GCP"
 
         with (
@@ -2249,7 +2249,7 @@ class TestPytestSnowflakeHook:
             SnowflakeHook(snowflake_conn_id="test_conn").get_conn()
 
         call_kwargs = mock_connect.call_args[1]
-        assert call_kwargs["authenticator"] == "WORKLOAD_IDENTITY"
+        assert call_kwargs["authenticator"] == "workload_identity"
         assert call_kwargs["workload_identity_provider"] == "GCP"
 
     def test_get_connection_form_widgets_exposes_workload_identity_provider(self):
@@ -2276,6 +2276,7 @@ class TestPytestSnowflakeHook:
                 "programmatic_access_token",
                 id="pat-mixed-case-whitespace",
             ),
+            pytest.param({"authenticator": "WORKLOAD_IDENTITY"}, "workload_identity", id="wif-uppercase"),
             pytest.param({"authenticator": "   "}, "snowflake", id="whitespace-uses-default"),
         ],
     )
@@ -2299,7 +2300,7 @@ class TestPytestSnowflakeHook:
         ``token`` or ``token_file_path`` to be forwarded.
         """
         connection_kwargs = deepcopy(BASE_CONNECTION_KWARGS)
-        connection_kwargs["extra"]["authenticator"] = "WORKLOAD_IDENTITY"
+        connection_kwargs["extra"]["authenticator"] = "workload_identity"
         connection_kwargs["extra"]["workload_identity_provider"] = "OIDC"
         connection_kwargs["extra"][field] = value
 
@@ -2312,7 +2313,7 @@ class TestPytestSnowflakeHook:
     def test_get_conn_params_omits_oidc_token_when_unset(self):
         """token/token_file_path must not appear unless explicitly configured."""
         connection_kwargs = deepcopy(BASE_CONNECTION_KWARGS)
-        connection_kwargs["extra"]["authenticator"] = "WORKLOAD_IDENTITY"
+        connection_kwargs["extra"]["authenticator"] = "workload_identity"
         connection_kwargs["extra"]["workload_identity_provider"] = "GCP"
 
         with mock.patch.dict("os.environ", AIRFLOW_CONN_TEST_CONN=Connection(**connection_kwargs).get_uri()):

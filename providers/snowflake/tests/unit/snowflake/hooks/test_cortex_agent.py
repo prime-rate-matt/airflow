@@ -415,11 +415,11 @@ class TestSnowflakeCortexAgentHook:
         mock_request,
         mock_fetch_token,
     ):
-        """WORKLOAD_IDENTITY connections without a private key authenticate with a WIF token."""
+        """workload_identity connections without a private key authenticate with a WIF token."""
         mock_static_conn_params.return_value = STATIC_CONN_PARAMS
         mock_conn_params.return_value = {
             "account": ACCOUNT,
-            "authenticator": "WORKLOAD_IDENTITY",
+            "authenticator": "workload_identity",
             "workload_identity_provider": "GCP",
         }
         mock_fetch_token.return_value = "gcp-id-token"

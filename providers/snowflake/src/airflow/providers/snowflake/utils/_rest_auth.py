@@ -80,7 +80,7 @@ class SnowflakeRestTokenProvider:
     reads the token ``hook._get_conn_params()`` already resolved (which itself refreshes an
     expiring OAuth or Azure token, so this provider does not cache that branch at all);
     ``authenticator == "programmatic_access_token"`` reads the PAT from the connection password;
-    a connection without a private key that sets ``authenticator=WORKLOAD_IDENTITY`` and
+    a connection without a private key that sets ``authenticator=workload_identity`` and
     ``workload_identity_provider`` uses Workload Identity Federation; anything else signs a key-pair JWT.
     The private key is loaded once and
     kept. The ``JWTGenerator`` is built once and kept, because it renews its own token on the
@@ -149,10 +149,10 @@ class SnowflakeRestTokenProvider:
                 self._private_key_loaded = True
             if self._private_key is None:
                 if conn_config.get("workload_identity_provider"):
-                    if (conn_config.get("authenticator") or "").upper() != "WORKLOAD_IDENTITY":
+                    if conn_config.get("authenticator") != "workload_identity":
                         raise ValueError(
                             "workload_identity_provider was set but authenticator was not set to "
-                            "WORKLOAD_IDENTITY"
+                            "workload_identity"
                         )
                     return self._get_workload_identity_token(conn_config)
                 raise ValueError(

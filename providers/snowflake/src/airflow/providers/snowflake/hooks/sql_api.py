@@ -60,7 +60,7 @@ class SnowflakeSqlApiHook(SnowflakeHook):
     3. PAT (Programmatic Access Token): set ``authenticator`` to ``programmatic_access_token`` in the
        connection extras and put the PAT value in the connection ``password`` field.
     4. Workload Identity Federation (WIF): when no private key is configured, set ``authenticator`` to
-       ``WORKLOAD_IDENTITY`` and ``workload_identity_provider`` to ``AWS``, ``AZURE``, ``GCP`` or
+       ``workload_identity`` and ``workload_identity_provider`` to ``AWS``, ``AZURE``, ``GCP`` or
        ``OIDC``. A configured private key takes precedence.
 
     :param snowflake_conn_id: Reference to

@@ -84,7 +84,7 @@ method the referenced Snowflake connection uses, set the same way as for
   ``private_key_file`` or ``private_key_content`` (optionally with a passphrase in Password), and
   set Login to the Snowflake user name the key is registered to.
 - **Workload Identity Federation (WIF)**: when no private key is configured, set
-  ``authenticator`` to ``WORKLOAD_IDENTITY`` and ``workload_identity_provider`` to
+  ``authenticator`` to ``workload_identity`` and ``workload_identity_provider`` to
   ``AWS``, ``AZURE``, ``GCP`` or ``OIDC``. See
   :ref:`Snowflake connection <howto/connection:snowflake>` for prerequisites and host restrictions.
 

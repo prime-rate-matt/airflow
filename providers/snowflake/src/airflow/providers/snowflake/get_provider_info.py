@@ -122,7 +122,7 @@ def get_provider_info():
                         "database": "snowflake db name",
                         "region": "snowflake hosted region",
                         "role": "snowflake role",
-                        "authenticator": "snowflake (default), oauth, programmatic_access_token, WORKLOAD_IDENTITY",
+                        "authenticator": "snowflake (default), oauth, programmatic_access_token, workload_identity",
                         "private_key_file": "Path of snowflake private key (PEM Format)",
                         "private_key_content": "Content to snowflake private key (PEM format)",
                         "workload_identity_provider": "AWS, AZURE, GCP or OIDC",

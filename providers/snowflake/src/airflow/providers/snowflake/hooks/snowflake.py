@@ -54,7 +54,7 @@ OAUTH_REQUEST_TIMEOUT = 30  # seconds, avoid hanging tasks on token request
 OAUTH_EXPIRY_BUFFER = 30
 SUPPORTED_GRANT_TYPES = {"refresh_token", "client_credentials", "password"}
 # The connector matches authenticator names case-insensitively, but the hooks compare these exactly.
-LOWERCASE_AUTHENTICATORS = {"oauth", "programmatic_access_token"}
+LOWERCASE_AUTHENTICATORS = {"oauth", "programmatic_access_token", "workload_identity"}
 LOGOUT_AUTO_DETECTION_PARAM = "enable_server_session_keep_alive_auto_detection"
 # Logout behaviour of connectors before 5.0: keep the server session while async queries
 # started on the connection are still running. Connector 5 plans to change its default.
@@ -368,7 +368,7 @@ class SnowflakeHook(DbApiHook):
                 "database": "snowflake db name",
                 "region": "snowflake hosted region",
                 "role": "snowflake role",
-                "authenticator": "snowflake (default), oauth, programmatic_access_token, WORKLOAD_IDENTITY",
+                "authenticator": "snowflake (default), oauth, programmatic_access_token, workload_identity",
                 "private_key_file": "Path of snowflake private key (PEM Format)",
                 "private_key_content": "Content to snowflake private key (PEM format)",
                 "workload_identity_provider": "AWS, AZURE, GCP or OIDC",
